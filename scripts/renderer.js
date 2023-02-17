@@ -56,7 +56,8 @@ class Renderer {
         
         // Following line is example of drawing a single line
         // (this should be removed after you implement the curve)
-        this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 0, 0, 255], framebuffer);
+        // this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 0, 0, 255], framebuffer);
+        this.drawBezierCurve({x: 50, y: 50}, {x: 50, y: 200}, {x: 200, y: 200}, {x: 200, y: 50}, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
     }
 
     // framebuffer:  canvas ctx image data
@@ -100,8 +101,20 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
-        
-        
+        let lines = [];
+        let edge = num_edges * 0.01;
+
+        for (let t = 0; t <= edge; t++) {
+            let xcoord = (Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * (Math.pow(t,2)) * p2.x) + ((Math.pow(t,3)) * p3.x);
+            let ycoord = (Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * (Math.pow(t,2)) * p2.y) + ((Math.pow(t,3)) * p3.y);
+            lines.push({x: xcoord, y: ycoord});
+
+            console.log("X: " + xcoord);
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+            this.drawLine({x: lines[i].x, y: lines[i].y}, {x: lines[i+1].x, y: lines[i+1].y}, color, framebuffer);
+        }
     }
 
     // center:       object {x: __, y: __}
@@ -234,6 +247,11 @@ class Renderer {
     }
     
     drawTriangle(p0, p1, p2, color, framebuffer) {
+        // Deep copy input points
+        p0 = {x: p0.x, y: p0.y};
+        p1 = {x: p1.x, y: p1.y};
+        p2 = {x: p2.x, y: p2.y};
+
         // Sort points in ascending y order
         if (p1.y < p0.y) this.swapPoints(p0, p1);
         if (p2.y < p0.y) this.swapPoints(p0, p2);
