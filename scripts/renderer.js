@@ -55,17 +55,17 @@ class Renderer {
         
         let red = [255, 0, 0, 255];
         let blue = [0, 0, 255, 255];
-        let green = [0, 255, 0, 255];
+        let green = [0, 175, 0, 255];
 
         let coordArr_1 = [{x: 50, y: 100},
-                        {x: 50, y: 500}, 
-                        {x: 450, y: 500}, 
-                        {x: 450, y: 100},];
+                          {x: 50, y: 500}, 
+                          {x: 450, y: 500}, 
+                          {x: 450, y: 100},];
 
         let coordArr_2 = [{x: 550, y: 550}, 
-                        {x: 550, y: 200}, 
-                        {x: 650, y: 400}, 
-                        {x: 750, y: 300}];
+                          {x: 550, y: 200}, 
+                          {x: 650, y: 400}, 
+                          {x: 750, y: 300}];
 
         this.drawBezierCurve(coordArr_1[0], coordArr_1[1], coordArr_1[2], coordArr_1[3], this.num_curve_sections, red, framebuffer);
         this.drawBezierCurve(coordArr_2[0], coordArr_2[1], coordArr_2[2], coordArr_2[3], this.num_curve_sections, red, framebuffer);
@@ -93,7 +93,7 @@ class Renderer {
         
         let red = [255, 0, 0, 255];
         let blue = [0, 0, 255, 255];
-        let green = [0, 255, 0, 255];
+        let green = [0, 175, 0, 255];
 
         let center1 = {x: 200, y: 200};
         let radius1 = 60;
@@ -101,40 +101,19 @@ class Renderer {
         let center2 = {x: 600, y: 400};
         let radius2 = 100;
 
-        this.drawCircle(center1, radius1, this.num_curve_sections, red, framebuffer);
-        this.drawCircle(center2, radius2, this.num_curve_sections, red, framebuffer);
+        let circle1 = this.drawCircle(center1, radius1, this.num_curve_sections, red, framebuffer);
+        let circle2 = this.drawCircle(center2, radius2, this.num_curve_sections, red, framebuffer);
 
         if (this.show_points == 1) {
             // Draw first circle
-            let angle = 360/this.num_curve_sections;
-            let toRadian = (angle * Math.PI) / 180;
-            let phi = 0;
-    
-            for (let i = 0; i <= this.num_curve_sections; i++) {
-                let xcoord = center1.x + (radius1 * Math.cos(phi));
-                let ycoord = center1.y + (radius1 * Math.sin(phi));
-    
-                xcoord = parseInt(xcoord);
-                ycoord = parseInt(ycoord);
-                phi += toRadian;
-    
-                this.drawVertex({x: xcoord, y: ycoord}, blue, framebuffer);
+            for (let i = 0; i < circle1.length; i++) {
+                this.drawVertex(circle1[i], blue, framebuffer);
             }
 
             // Draw coordArr_2 coordinates
-            phi = 0;
-    
-            for (let i = 0; i <= this.num_curve_sections; i++) {
-                let xcoord = center2.x + (radius2 * Math.cos(phi));
-                let ycoord = center2.y + (radius2 * Math.sin(phi));
-    
-                xcoord = parseInt(xcoord);
-                ycoord = parseInt(ycoord);
-                phi += toRadian;
-    
-                this.drawVertex({x: xcoord, y: ycoord}, green, framebuffer);
+            for (let i = 0; i < circle2.length; i++) {
+                this.drawVertex(circle2[i], green, framebuffer);
             }
-            
         }
     }
 
@@ -143,13 +122,40 @@ class Renderer {
         // TODO: draw at least 2 convex polygons (each with a different number of vertices >= 5)
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         
-        
-        // Following lines are example of drawing a single triangle
-        // (this should be removed after you implement the polygon)
-        let point_a = {x:  80, y:  40};
-        let point_b = {x: 320, y: 160};
-        let point_c = {x: 240, y: 360};
-        this.drawTriangle(point_a, point_c, point_b, [0, 128, 128, 255], framebuffer);
+        let red = [255, 0, 0, 255];
+        let blue = [0, 0, 255, 255];
+        let green = [0, 175, 0, 255];
+
+        let shape1 = [{x: 125, y: 125},
+                      {x: 113, y: 156},
+                      {x: 138, y: 188},
+                      {x: 188, y: 219},
+                      {x: 263, y: 250},
+                      {x: 219, y: 188},
+                      {x: 188, y: 150},
+                      {x: 153, y: 125}];
+                      
+        let shape2 = [{x: 300, y: 300},
+                      {x: 250, y: 400},
+                      {x: 300, y: 500},
+                      {x: 425, y: 500},
+                      {x: 475, y: 400},
+                      {x: 425, y: 300}];
+
+        this.drawConvexPolygon(shape1, red, framebuffer);
+        this.drawConvexPolygon(shape2, red, framebuffer);
+
+        if (this.show_points == 1) {
+            // Shape 1
+            for (let i = 0; i < shape1.length; i++) {
+                this.drawVertex(shape1[i], blue, framebuffer);
+            }
+
+            // Shape 2
+            for (let i = 0; i < shape2.length; i++) {
+                this.drawVertex(shape2[i], green, framebuffer);
+            }
+        }
     }
 
     // framebuffer:  canvas ctx image data
@@ -263,6 +269,8 @@ class Renderer {
             console.log("lines[i+1].y: " + lines[i+1].y);
             */
         }
+
+        return lines;
     }
     
     // vertex_list:  array of object [{x: __, y: __}, {x: __, y: __}, ..., {x: __, y: __}]
@@ -270,7 +278,18 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawConvexPolygon(vertex_list, color, framebuffer) {
         // TODO: draw a sequence of triangles to form a convex polygon
-        
+
+        for (let i = 0; i < vertex_list.length-2; i++) {
+            this.drawTriangle(vertex_list[0], vertex_list[i+1], vertex_list[i+2], color, framebuffer);
+            
+            /* 
+            console.log("\ni: " + i);
+            console.log("Vertex[i+1].x: " + vertex_list[i+1].x);
+            console.log("Vertex[i+2].y: " + vertex_list[i+1].y);
+            console.log("Vertex[i+1].x: " + vertex_list[i+2].x);
+            console.log("Vertex[i+2].y: " + vertex_list[i+2].y); 
+            */
+        }
         
     }
     
