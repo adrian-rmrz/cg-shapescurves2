@@ -53,11 +53,36 @@ class Renderer {
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         
-        
-        // Following line is example of drawing a single line
-        // (this should be removed after you implement the curve)
-        // this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 0, 0, 255], framebuffer);
-        this.drawBezierCurve({x: 50, y: 50}, {x: 50, y: 200}, {x: 200, y: 200}, {x: 200, y: 50}, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
+        let red = [255, 0, 0, 255];
+        let blue = [0, 0, 255, 255];
+        let green = [0, 255, 0, 255];
+
+        let coordArr_1 = [{x: 50, y: 100},
+                        {x: 50, y: 500}, 
+                        {x: 450, y: 500}, 
+                        {x: 450, y: 100},];
+
+        let coordArr_2 = [{x: 550, y: 550}, 
+                        {x: 550, y: 200}, 
+                        {x: 650, y: 400}, 
+                        {x: 750, y: 300}];
+
+        this.drawBezierCurve(coordArr_1[0], coordArr_1[1], coordArr_1[2], coordArr_1[3], this.num_curve_sections, red, framebuffer);
+        this.drawBezierCurve(coordArr_2[0], coordArr_2[1], coordArr_2[2], coordArr_2[3], this.num_curve_sections, red, framebuffer);
+
+        if (this.show_points == 1) {
+            // Draw coordArr_1 coordinates
+            for (let i = 0; i < coordArr_1.length; i++) {
+                this.drawVertex(coordArr_1[i], blue, framebuffer);
+            }
+
+            // Draw coordArr_2 coordinates
+            for (let i = 0; i < coordArr_2.length; i++) {
+                this.drawVertex(coordArr_2[i], green, framebuffer);
+            }
+            
+        }
+
     }
 
     // framebuffer:  canvas ctx image data
@@ -102,18 +127,47 @@ class Renderer {
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
         let lines = [];
-        let edge = num_edges * 0.01;
+        let edge = 1/num_edges;
+        let t = 0;
 
-        for (let t = 0; t <= edge; t++) {
+        /* Debugging
+        console.log("==============================");
+        console.log("num_edges: " + num_edges);
+        console.log("edge: " + t);
+        */
+
+        for (let i = 0; i <= num_edges; i++) {
             let xcoord = (Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * (Math.pow(t,2)) * p2.x) + ((Math.pow(t,3)) * p3.x);
             let ycoord = (Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * (Math.pow(t,2)) * p2.y) + ((Math.pow(t,3)) * p3.y);
+
+            xcoord = parseInt(xcoord);
+            ycoord = parseInt(ycoord);
+            t += edge;
+
             lines.push({x: xcoord, y: ycoord});
 
-            console.log("X: " + xcoord);
+            /* Debugging
+            console.log("\nX: " + xcoord);
+            console.log("y: " + ycoord);
+            */
         }
 
-        for (let i = 0; i < lines.length; i++) {
+        /* Debugging
+        console.log("_______________________________");
+        console.log("lines.length: " + lines.length);
+        */
+
+        for (let i = 0; i < lines.length-1; i++) {
             this.drawLine({x: lines[i].x, y: lines[i].y}, {x: lines[i+1].x, y: lines[i+1].y}, color, framebuffer);
+            
+            /* Debugging
+            console.log("\ni: " + i);
+            console.log("i+1: " + (i+1));
+            console.log("lines[i].x: " + lines[i].x);
+            console.log("lines[i].y: " + lines[i].y);
+            console.log("lines[i+1].x: " + lines[i+1].x);
+            console.log("lines[i+1].y: " + lines[i+1].y);
+            */
         }
     }
 
@@ -143,7 +197,13 @@ class Renderer {
     drawVertex(v, color, framebuffer) {
         // TODO: draw some symbol (e.g. small rectangle, two lines forming an X, ...) centered at position `v`
         
-        
+        // Bottom left corner of rectangle to Top left and bottom right
+        this.drawLine({x: (v.x - 10), y: (v.y - 10)}, {x: (v.x - 10), y: (v.y + 10)}, color, framebuffer);
+        this.drawLine({x: (v.x - 10), y: (v.y - 10)}, {x: (v.x + 10), y: (v.y - 10)}, color, framebuffer);
+
+        // Top right corner of rectangle to Top left and bottom right
+        this.drawLine({x: (v.x + 10), y: (v.y + 10)}, {x: (v.x - 10), y: (v.y + 10)}, color, framebuffer);
+        this.drawLine({x: (v.x + 10), y: (v.y + 10)}, {x: (v.x + 10), y: (v.y - 10)}, color, framebuffer);
     }
     
     /***************************************************************
