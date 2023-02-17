@@ -91,7 +91,51 @@ class Renderer {
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         
-        
+        let red = [255, 0, 0, 255];
+        let blue = [0, 0, 255, 255];
+        let green = [0, 255, 0, 255];
+
+        let center1 = {x: 200, y: 200};
+        let radius1 = 60;
+
+        let center2 = {x: 600, y: 400};
+        let radius2 = 100;
+
+        this.drawCircle(center1, radius1, this.num_curve_sections, red, framebuffer);
+        this.drawCircle(center2, radius2, this.num_curve_sections, red, framebuffer);
+
+        if (this.show_points == 1) {
+            // Draw first circle
+            let angle = 360/this.num_curve_sections;
+            let toRadian = (angle * Math.PI) / 180;
+            let phi = 0;
+    
+            for (let i = 0; i <= this.num_curve_sections; i++) {
+                let xcoord = center1.x + (radius1 * Math.cos(phi));
+                let ycoord = center1.y + (radius1 * Math.sin(phi));
+    
+                xcoord = parseInt(xcoord);
+                ycoord = parseInt(ycoord);
+                phi += toRadian;
+    
+                this.drawVertex({x: xcoord, y: ycoord}, blue, framebuffer);
+            }
+
+            // Draw coordArr_2 coordinates
+            phi = 0;
+    
+            for (let i = 0; i <= this.num_curve_sections; i++) {
+                let xcoord = center2.x + (radius2 * Math.cos(phi));
+                let ycoord = center2.y + (radius2 * Math.sin(phi));
+    
+                xcoord = parseInt(xcoord);
+                ycoord = parseInt(ycoord);
+                phi += toRadian;
+    
+                this.drawVertex({x: xcoord, y: ycoord}, green, framebuffer);
+            }
+            
+        }
     }
 
     // framebuffer:  canvas ctx image data
@@ -179,7 +223,46 @@ class Renderer {
     drawCircle(center, radius, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a circle
         
-        
+        let lines = [];
+        let angle = 360/num_edges;
+        let toRadian = (angle * Math.PI) / 180;
+        let phi = 0;
+
+        /* Debugging
+        console.log("==============================");
+        console.log("num_edges: " + num_edges);
+        console.log("angle: " + angle);
+        */
+
+        for (let i = 0; i <= num_edges; i++) {
+            let xcoord = center.x + (radius * Math.cos(phi));
+            let ycoord = center.y + (radius * Math.sin(phi));
+
+            xcoord = parseInt(xcoord);
+            ycoord = parseInt(ycoord);
+            phi += toRadian;
+
+            lines.push({x: xcoord, y: ycoord});
+
+            /* Debugging
+            console.log("\nX: " + xcoord);
+            console.log("Y: " + ycoord);
+            console.log("T: " + phi);
+            */
+        }
+
+        for (let i = 0; i < lines.length-1; i++) {
+            this.drawLine({x: lines[i].x, y: lines[i].y}, {x: lines[i+1].x, y: lines[i+1].y}, color, framebuffer);
+            
+            /* Debugging
+            console.log("\ni: " + i);
+            console.log("i+1: " + (i+1));
+            console.log("lines[i].x: " + lines[i].x);
+            console.log("lines[i].y: " + lines[i].y);
+            console.log("lines[i+1].x: " + lines[i+1].x);
+            console.log("lines[i+1].y: " + lines[i+1].y);
+            */
+        }
     }
     
     // vertex_list:  array of object [{x: __, y: __}, {x: __, y: __}, ..., {x: __, y: __}]
