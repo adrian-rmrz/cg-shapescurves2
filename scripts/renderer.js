@@ -164,7 +164,42 @@ class Renderer {
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         
+        let red = [255, 0, 0, 255];
+        let blue = [0, 0, 255, 255];
+        let green = [0, 175, 0, 255];
+        let white = [255, 255, 255, 255];
+
+        // A
+        let leftLine = [{x: 75, y: 200}, 
+                        {x: 150, y: 400}, 
+                        {x: 150, y: 350}, 
+                        {x: 94, y: 200}];
+
+        let rightLine = [{x: 219, y: 200}, 
+                        {x: 150, y: 400}, 
+                        {x: 150, y: 350}, 
+                        {x: 200, y: 200}];
+
+        let connection = [{x: 100, y: 260}, 
+                          {x: 125, y: 285}, 
+                          {x: 175, y: 285}, 
+                          {x: 195, y: 260}];
         
+        this.drawConvexPolygon(leftLine, red, framebuffer);
+        this.drawConvexPolygon(rightLine, red, framebuffer);
+        this.drawConvexPolygon(connection, red, framebuffer);
+
+        // d
+        //let bigCircle = 
+        
+        // r
+
+        // i
+
+        // a
+
+        // n
+
     }
 
     // p0:           object {x: __, y: __}
