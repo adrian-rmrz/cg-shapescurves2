@@ -168,6 +168,7 @@ class Renderer {
         let blue = [0, 0, 255, 255];
         let green = [0, 175, 0, 255];
         let white = [255, 255, 255, 255];
+        let purple = [255, 0, 255, 255];
 
         // A
         let leftLine = [{x: 75, y: 200}, 
@@ -190,16 +191,106 @@ class Renderer {
         this.drawConvexPolygon(connection, red, framebuffer);
 
         // d
-        //let bigCircle = 
+        let dCircle = this.drawCircle({x: 275, y: 250}, 50, this.num_curve_sections, red, framebuffer);
+        this.drawLine({x: 325, y: 200}, {x: 325, y: 400}, red, framebuffer);
         
         // r
+        this.drawLine({x: 350, y: 200}, {x: 350, y: 300}, red, framebuffer);
+        this.drawBezierCurve({x: 350, y: 250}, {x: 350, y: 300}, {x: 400, y: 300}, {x: 400, y: 275}, this.num_curve_sections, red, framebuffer);
 
         // i
+        this.drawLine({x: 425, y: 200}, {x: 425, y: 290}, red, framebuffer);
+        let iCircle = this.drawCircle({x: 425, y: 310}, 10, this.num_curve_sections, red, framebuffer);
 
         // a
+        let aCircle = [{x: 470, y: 200}, 
+                       {x: 450, y: 225},
+                       {x: 450, y: 275},
+                       {x: 470, y: 300}, 
+                       {x: 505, y: 300}, 
+                       {x: 525, y: 250}, 
+                       {x: 505, y: 200}];
+
+        let aWhiteCircle = [{x: 475, y: 210}, 
+                            {x: 460, y: 230},
+                            {x: 460, y: 270},
+                            {x: 475, y: 290}, 
+                            {x: 499, y: 290}, 
+                            {x: 515, y: 250}, 
+                            {x: 499, y: 210}];
+
+        this.drawConvexPolygon(aCircle, red, framebuffer);
+        this.drawConvexPolygon(aWhiteCircle, white, framebuffer);
+        this.drawBezierCurve({x: 525, y: 300}, {x: 525, y: 200}, {x: 535, y: 200}, {x: 535, y: 200}, this.num_curve_sections, red, framebuffer);
 
         // n
+        this.drawLine({x: 550, y: 200}, {x: 550, y: 300}, red, framebuffer);
+        this.drawBezierCurve({x: 550, y: 250}, {x: 550, y: 300}, {x: 600, y: 300}, {x: 610, y: 275}, this.num_curve_sections, red, framebuffer);
+        this.drawLine({x: 610, y: 200}, {x: 610, y: 275}, red, framebuffer);
 
+        if (this.show_points == 1) {
+            // A
+            for (let i = 0; i < leftLine.length; i++) {
+                this.drawVertex(leftLine[i], green, framebuffer);
+            }
+            for (let i = 0; i < rightLine.length; i++) {
+                this.drawVertex(rightLine[i], blue, framebuffer);
+            }
+            for (let i = 0; i < connection.length; i++) {
+                this.drawVertex(connection[i], purple, framebuffer);
+            }
+
+            // d
+            for (let i = 0; i < dCircle.length; i++) {
+                this.drawVertex(dCircle[i], green, framebuffer);
+            }
+
+            this.drawVertex({x: 325, y: 200}, blue, framebuffer);
+            this.drawVertex({x: 325, y: 400}, blue, framebuffer); 
+
+            // r
+            this.drawVertex({x: 350, y: 200}, green, framebuffer);
+            this.drawVertex({x: 350, y: 300}, green, framebuffer);
+
+            this.drawVertex({x: 350, y: 250}, blue, framebuffer);
+            this.drawVertex({x: 350, y: 300}, blue, framebuffer);
+            this.drawVertex({x: 400, y: 300}, blue, framebuffer);
+            this.drawVertex({x: 400, y: 275}, blue, framebuffer);
+
+            // i
+            this.drawVertex({x: 425, y: 200}, green, framebuffer);
+            this.drawVertex({x: 425, y: 290}, green, framebuffer);
+
+            for (let i = 0; i < iCircle.length; i++) {
+                this.drawVertex(iCircle[i], blue, framebuffer);
+            }
+
+            // a
+            for (let i = 0; i < aCircle.length; i++) {
+                this.drawVertex(aCircle[i], green, framebuffer);
+            }
+
+            for (let i = 0; i < aWhiteCircle.length; i++) {
+                this.drawVertex(aWhiteCircle[i], blue, framebuffer);
+            }
+
+            this.drawVertex({x: 525, y: 300}, purple, framebuffer);
+            this.drawVertex({x: 525, y: 200}, purple, framebuffer);
+            this.drawVertex({x: 535, y: 200}, purple, framebuffer);
+            this.drawVertex({x: 535, y: 200}, purple, framebuffer);
+
+            // n
+            this.drawVertex({x: 550, y: 200}, green, framebuffer);
+            this.drawVertex({x: 550, y: 300}, green, framebuffer);
+
+            this.drawVertex({x: 550, y: 250}, blue, framebuffer);
+            this.drawVertex({x: 550, y: 300}, blue, framebuffer);
+            this.drawVertex({x: 600, y: 300}, blue, framebuffer);
+            this.drawVertex({x: 610, y: 275}, blue, framebuffer);
+
+            this.drawVertex({x: 610, y: 200}, purple, framebuffer);
+            this.drawVertex({x: 610, y: 275}, purple, framebuffer);
+        }
     }
 
     // p0:           object {x: __, y: __}
